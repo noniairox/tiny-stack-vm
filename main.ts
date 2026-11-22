@@ -153,7 +153,9 @@ function run(p, inp) {
   }
 }
 
-for (const id of readdirSync(I).sort()) {
+for (const e of readdirSync(I, { withFileTypes: true }).sort((a, b) => a.name < b.name ? -1 : a.name > b.name ? 1 : 0)) {
+  if (!e.isDirectory()) continue; // stray file in /input is not an instance; never let it kill the run
+  const id = e.name;
   const prog = readFileSync(join(I, id, 'program.bin'));
   const inp = readFileSync(join(I, id, 'input.bin'));
   const [stdout, exit] = run(prog, inp);
